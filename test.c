@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 void* ptr;
-
+// int PAGE_SIZE;
 // void handle_sigsegv(int sig) {
 //     printf("SIGSEGV SIGNAL!\n");
 //     sleep(1);
@@ -19,7 +19,7 @@ void* ptr;
 
 void handle_sigsegv(int sig, siginfo_t *info, void *ucontext) {
     printf("si code: %d\n", info->si_code);
-    int val = mprotect(&ptr, 1024, PROT_WRITE | PROT_READ);
+    int val = mprotect(ptr, 1024, PROT_WRITE | PROT_READ);
     printf("%d\n", val);
     sleep(1);
 }
