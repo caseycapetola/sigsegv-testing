@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <ucontext.h>
 
 void* ptr;
 // int PAGE_SIZE;
@@ -19,9 +20,11 @@ void* ptr;
 
 void handle_sigsegv(int sig, siginfo_t *info, void *ucontext) {
     printf("si code: %d\n", info->si_code);
-    int* temp = (int *) ucontext;
-    printf("ucontext: %d\n", *temp);
-    printf("bitwise and check: %d\n", *temp & 3);
+    ucontext_t* temp = (ucontext_t *) ucontext;
+    // printf("ucontext: %d\n", *temp);
+    // printf("bitwise and check: %d\n", *temp & 3);
+    // int con = getcontext(temp);
+    // printf("context: %d\n", con);
     int val = mprotect(ptr, 1024, PROT_WRITE | PROT_READ);
     printf("%d\n", val);
     sleep(1);
@@ -46,13 +49,13 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "posix_memalign failed\n");
         return -1;
     }
-
+    printf("PROT_READ: %d ... PROT_WRITE: %d ... PROT_READ | PROT_WRITE: %d\n", PROT_READ, PROT_WRITE, PROT_READ | PROT_WRITE);
     char* ptr1 = (char *)ptr;
     // ptr1 = &ptr1[0];
     printf("ptr1: %p, &ptr1[0]: %p\n", ptr1, &ptr1[0]);
-    int val = mprotect(ptr1, 1024, PROT_READ);
+    int val = mprotect(ptr1, 1024, PROT_NONE);
     printf("main val: %d\n", val);
-    // char yuh = ptr1[0];
+    // char yuh = ptr1[512];
     printf("yuh\n");
     ptr1[0] = 'a';
     printf("made it\n");
