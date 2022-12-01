@@ -19,6 +19,9 @@ void* ptr;
 
 void handle_sigsegv(int sig, siginfo_t *info, void *ucontext) {
     printf("si code: %d\n", info->si_code);
+    int* temp = (int *) ucontext;
+    printf("ucontext: %d\n", *temp);
+    printf("bitwise and check: %d\n", *temp & 3);
     int val = mprotect(ptr, 1024, PROT_WRITE | PROT_READ);
     printf("%d\n", val);
     sleep(1);
@@ -47,10 +50,13 @@ int main(int argc, char* argv[]) {
     char* ptr1 = (char *)ptr;
     // ptr1 = &ptr1[0];
     printf("ptr1: %p, &ptr1[0]: %p\n", ptr1, &ptr1[0]);
-    int val = mprotect(ptr1, 1024, PROT_NONE);
+    int val = mprotect(ptr1, 1024, PROT_READ);
     printf("main val: %d\n", val);
+    // char yuh = ptr1[0];
+    printf("yuh\n");
     ptr1[0] = 'a';
     printf("made it\n");
+    char* tmp = ptr1;
     char character = ptr1[0];
     printf("made it lower!\n");
     printf("char val: %c\n", character);
